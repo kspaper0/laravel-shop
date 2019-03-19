@@ -5,7 +5,10 @@
 <div class="row">
 <div class="col-lg-10 col-lg-offset-1">
 <div class="panel panel-default">
-  <div class="panel-heading">Postal Address List</div>
+  <div class="panel-heading">
+  Postal Address List
+  <a href="{{ route('user_addresses.create') }}" class="pull-right">Add New Postal Address</a>
+  </div>
   <div class="panel-body">
     <table class="table table-bordered table-striped">
       <thead>
