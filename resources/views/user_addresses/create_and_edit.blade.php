@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Add New Postal Address')
+@section('title', ($address->id ? 'Update': 'Add New'). ' Postal Address' )
 
 @section('content')
 <div class="row">
@@ -7,7 +7,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h2 class="text-center">
-      Add New Postal Address
+      {{ $address->id ? 'Update' : 'Add New' }} Postal Address
     </h2>
   </div>
   <div class="panel-body">
@@ -25,11 +25,16 @@
     <!-- 输出后端报错结束 -->
     <!-- inline-template 代表通过内联方式引入组件 -->
     <user-addresses-create-and-edit inline-template>
-      <form class="form-horizontal" role="form" action="{{ route('user_addresses.store') }}" method="post">
+      @if($address->id)
+        <form class="form-horizontal" role="form" action="{{ route('user_addresses.update', ['user_address' => $address->id]) }}" method="post">
+        {{ method_field('PUT') }}
+      @else
+        <form class="form-horizontal" role="form" action="{{ route('user_addresses.store') }}" method="post">
+      @endif
         <!-- 引入 csrf token 字段 -->
         {{ csrf_field() }}
         <!-- 注意这里多了 @change -->
-        <select-district @change="onDistrictChanged" inline-template>
+        <select-district :init-value="{{ json_encode([$address->province, $address->city, $address->district]) }}" @change="onDistrictChanged" inline-template>
           <div class="form-group">
             <label class="control-label col-sm-2">State/City/District</label>
             <div class="col-sm-3">
