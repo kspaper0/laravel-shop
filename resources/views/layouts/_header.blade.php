@@ -28,7 +28,11 @@
                             {{ Auth::user()->name }} <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ route('user_addresses.index') }}">Postal Address</a></li>
+                            <li><a href="{{ route('user_addresses.index') }}">Postal Address</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('products.favorites') }}">My Favorites</a>
+                            </li>
                             <li>
                                 <a href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
