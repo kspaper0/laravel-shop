@@ -36,7 +36,11 @@
         </div>
         <div class="cart_amount"><label>Amounts</label><input type="text" class="form-control input-sm" value="1"><span class="stock"></span></div>
         <div class="buttons">
-          <button class="btn btn-success btn-favor">❤ Favourites</button>
+          @if($favored)
+          <button class="btn btn-danger btn-disfavor">Remove Favorites</button>
+          @else
+          <button class="btn btn-success btn-favor">❤ Favorites</button>
+          @endif
           <button class="btn btn-primary btn-add-to-cart">Add to Shopping Cart</button>
         </div>
       </div>
@@ -68,6 +72,42 @@
     $('.sku-btn').click(function () {
       $('.product-info .price span').text($(this).data('price'));
       $('.product-info .stock').text('Stock:' + $(this).data('stock'));
+    });
+
+    // 监听收藏按钮的点击事件
+    $('.btn-favor').click(function () {
+      // 发起一个 post ajax 请求，请求 url 通过后端的 route() 函数生成。
+      axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
+        .then(function () { // 请求成功会执行这个回调
+          swal('Favorite Added Successfully', '', 'success')
+            .then(function () {
+              location.reload();
+            });
+        }, function(error) { // 请求失败会执行这个回调
+          // 如果返回码是 401 代表没登录
+          if (error.response && error.response.status === 401) {
+            swal('Please Login', '', 'error')
+              .then(function() {
+                location.href = '{{ route('login') }}';
+              });
+          } else if (error.response && error.response.data.msg) {
+            // 其他有 msg 字段的情况，将 msg 提示给用户
+            swal(error.response.data.msg, '', 'error');
+          }  else {
+            // 其他情况应该是系统挂了
+            swal('Internal Error', '', 'error');
+          }
+        });
+    });
+
+    $('.btn-disfavor').click(function () {
+      axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
+        .then(function () {
+          swal('Favorite Removed Successfully', '', 'success')
+            .then(function () {
+              location.reload();
+            });
+        });
     });
   });
 </script>
