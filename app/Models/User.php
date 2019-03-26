@@ -45,4 +45,9 @@ class User extends Authenticatable
             ->orderBy('user_favorite_products.created_at', 'desc');
             // withTimestamps() 代表中间表带有时间戳字段
     }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }
