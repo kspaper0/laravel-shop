@@ -119,7 +119,10 @@
         amount: $('.cart_amount input').val(),
       })
         .then(function () { // 请求成功执行此回调
-          swal('Added in Shopping Cart Successfully', '', 'success');
+          swal('Added in Shopping Cart Successfully', '', 'success')
+          .then(function() {
+            location.href = '{{ route('cart.index') }}';
+          });
         }, function (error) { // 请求失败执行此回调
           if (error.response.status === 401) {
 
