@@ -44,9 +44,9 @@ class CartController extends Controller
         // Laravel 还支持通过 . 的方式加载多层级的关联关系
         // 这里我们就通过 . 提前加载了与商品 SKU 关联的商品
 
+        $addresses = $request->user()->addresses()->orderBy('last_used_at', 'desc')->get();
 
-
-        return view('cart.index', ['cartItems' => $cartItems]);
+        return view('cart.index', ['cartItems' => $cartItems, 'addresses' => $addresses]);
     }
 
     public function remove(ProductSku $sku, Request $request)
