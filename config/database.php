@@ -106,6 +106,10 @@ return [
 
     'redis' => [
 
+        'options' => [
+            'prefix' => 'shop:'
+        ],
+
         'client' => 'predis',
 
         'default' => [
