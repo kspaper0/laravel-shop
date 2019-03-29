@@ -82,6 +82,9 @@ class OrdersController extends Controller
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate();
+            // with 使用在返回 Order 列表时，
+            // 一条 SQL 就能查出所有 Order 的 Items
+            // load 通常在返回一条 Order 使用
 
         return view('orders.index', ['orders' => $orders]);
     }
