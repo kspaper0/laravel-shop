@@ -66,6 +66,13 @@
               Unpaid
             @endif
           </div>
+          <!-- 支付按钮开始 -->
+          @if(!$order->paid_at && !$order->closed)
+          <div class="payment-buttons">
+            <a class="btn btn-primary btn-sm" href="{{ route('payment.alipay', ['order' => $order->id]) }}">Pay by Alipay</a>
+          </div>
+          @endif
+          <!-- 支付按钮结束 -->
         </div>
       </div>
     </div>
