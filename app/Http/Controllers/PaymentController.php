@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Exceptions\InvalidRequestException;
 use Carbon\Carbon;
+use App\Events\OrderPaid;
 
 class PaymentController extends Controller
 {
@@ -24,6 +25,7 @@ class PaymentController extends Controller
             'out_trade_no' => $order->no, // 订单编号，需保证在商户端不重复
             'total_amount' => $order->total_amount, // 订单金额，单位元，支持小数点后两位
             'subject'      => 'Payment of Laravel Shop: '.$order->no, // 订单标题
+            //'timeout_express'   => '30m'
         ]);
     }
 
@@ -68,8 +70,14 @@ class PaymentController extends Controller
             'payment_no'     => $data->trade_no, // 支付宝订单号
         ]);
 
+        $this->afterPaid($order);
         return app('alipay')->success();
         
         //\Log::debug('Alipay notify', $data->all());
+    }
+
+    protected function afterPaid(Order $order)
+    {
+        event(new OrderPaid($order));
     }
 }
