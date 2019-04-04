@@ -11,6 +11,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use App\Exceptions\InvalidRequestException;
+use App\Jobs\AutoReceive;
 
 class OrdersController extends Controller
 {
@@ -200,6 +201,7 @@ class OrdersController extends Controller
         ]);
 
         // 返回上一页
+        $this->dispatch(new AutoReceive($order,config('app.auto_receive_ttl')));
         return redirect()->back();
     }
 }
