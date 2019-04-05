@@ -400,7 +400,7 @@ body {
       width: 150px;
       padding-right: 20px;
     }
-    .payment-buttons, .receive-button {
+    .payment-buttons, .receive-button, .refund-button {
       margin-top: 10px;
       padding-right: 10px;
     }
@@ -473,6 +473,7 @@ body {
     }
     & > input:checked ~ label {
       color: gold;
+      // 如果 input 选中，那么 label 就是金色 
     }
     & > label:active {
       position: relative;
