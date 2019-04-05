@@ -78,7 +78,7 @@
           <div class="value">$ {{ $order->total_amount }}</div>
         </div>
         <div>
-          <span>Status</span>
+          <span>Status: </span>
           <div class="value">
             @if($order->paid_at)
               @if($order->refund_status === \App\Models\Order::REFUND_STATUS_PENDING)
@@ -92,6 +92,12 @@
               Unpaid
             @endif
           </div>
+          @if(isset($order->extra['refund_disagree_reason']))
+          <div>
+            <span>Refused Reason: </span>
+            <div class="value">{{ $order->extra['refund_disagree_reason'] }}</div>
+          </div>
+          @endif
           <!-- 支付按钮开始 -->
           @if(!$order->paid_at && !$order->closed)
           <div class="payment-buttons">
