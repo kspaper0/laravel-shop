@@ -87,6 +87,11 @@ class Order extends Model
         } while (self::query()->where('refund_no', $no)->exists());
 
         return $no;
+        // do-while 先执行循环体的语句，然后判断条件是否为真
+        // 为真则继续循环，为假则终止循环
+        // 此处，当被调用时，先执行循环体语句，生成 refund no
+        // 然后判断是否在数据库中存在，因为一开始 refund_no 为 null
+        // 所以，必然为假，假即终止循环，输出 refund no
     }
 
     public function user()
