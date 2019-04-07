@@ -35,6 +35,12 @@ class CouponCode extends Model
     protected $dates = ['not_before', 'not_after'];
 
     protected $appends = ['description'];
+    // 在对模型做序列化时, 比如在控制器中返回一个模型对象
+    // 这里的控制器对象在 admin 里，这个模型就会被 JSON 序列化
+    // 会把 $appends 中列出的访问器也序列化进来
+    // 以优惠券模型为例，优惠券的数据库结构中原本没有 description 字段
+    // 如果没有将 description 放入 $appends 属性
+    // 那么控制器返回优惠券模型时，前端拿到的对象没有 description 字段
 
     public static function findAvailableCode($length = 16)
     {
