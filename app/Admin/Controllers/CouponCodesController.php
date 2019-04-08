@@ -154,6 +154,10 @@ class CouponCodesController extends Controller
                 // code 在 couple_codes 这个表中是 唯一的
                 // 可以保留原来的值 code
                 // 在这个模型的id 是否为当前要更改的 id
+                // 或者 验证唯一性时忽略 coupon_codes 表中字段名为id
+                // 值为$id的值的那条 code 记录.
+                // unique:table,column,except,idColumn
+                // 验证字段的唯一性，并且排除id为本身的记录
             } else {
                 return 'nullable|unique:coupon_codes';
             }
@@ -173,6 +177,11 @@ class CouponCodesController extends Controller
 
         $form->datetime('not_before', 'Begin at');
         $form->datetime('not_after', 'End at');
+        // $form->datetime('not_after', 'End at')->rules(function ($form) {
+        //     if(isset($form->not_before)) {
+        //         return 'after_or_equal:not_before';
+        //     } 
+        // });
 
         $form->radio('enabled', 'Enable')->options(['1' => 'Yes', '0' => 'No']);
 
