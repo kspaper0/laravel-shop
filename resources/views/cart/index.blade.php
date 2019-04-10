@@ -186,12 +186,13 @@
               })
             });
             html += '</div>';
-            swal({content: $(html)[0], icon: 'error'})
-          } else {
-            // 其他情况应该是系统挂了
+            swal({content:$(html)[0],icon:'error'});
+        } else if (error.response.status === 403){
+            swal(error.response.data.msg, '', 'error');
+        } else {
             swal('Internal Error', '', 'error');
-          }
-        });
+        }
+      });
     });
 
     // 检查按钮点击事件

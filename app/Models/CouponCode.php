@@ -60,7 +60,7 @@ class CouponCode extends Model
         $str = '';
 
         if ($this->min_amount > 0) {
-            $str = 'Spend $'.str_replace('.00', '', $this->min_amount);
+            $str = 'Over $'.str_replace('.00', '', $this->min_amount);
         }
         if ($this->type === self::TYPE_PERCENT) {
             return $str.' Get '.str_replace('.00', '', $this->value).'% Discount';
@@ -69,7 +69,7 @@ class CouponCode extends Model
         return $str.' Minus $'.str_replace('.00', '', $this->value);
     }
 
-    public function checkAvailable($orderAmount = null)
+    public function checkAvailable(User $user, $orderAmount = null)
     {
         if (!$this->enabled) {
             throw new CouponCodeUnavailableException('The Coupon is not existed');
@@ -89,6 +89,22 @@ class CouponCode extends Model
 
         if (!is_null($orderAmount) && $orderAmount < $this->min_amount) {
             throw new CouponCodeUnavailableException('The amount of order is less than minimal amount of the coupon');
+        }
+
+        $used = Order::where('user_id', $user->id)
+            ->where('coupon_code_id', $this->id)
+            ->where(function($query) {
+                $query->where(function($query) {
+                    $query->whereNull('paid_at')
+                        ->where('closed', false);
+                })->orWhere(function($query) {
+                    $query->whereNotNull('paid_at')
+                        ->where('refund_status', '!=', Order::REFUND_STATUS_SUCCESS);
+                });
+            })
+            ->exists();
+        if ($used) {
+            throw new CouponCodeUnavailableException('The coupon has already been used');
         }
     }
 
