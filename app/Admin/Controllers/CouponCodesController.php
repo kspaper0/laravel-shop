@@ -164,7 +164,7 @@ class CouponCodesController extends Controller
         });
         $form->radio('type', 'Type')->options(CouponCode::$typeMap)->rules('required');
         $form->text('value', 'Value')->rules(function ($form) {
-            if ($form->model()->type === CouponCode::TYPE_PERCENT) {
+            if (request()->input('type') === CouponCode::TYPE_PERCENT) {
                 // 如果选择了百分比折扣类型，那么折扣范围只能是 1 ~ 99
                 return 'required|numeric|between:1,99';
             } else {

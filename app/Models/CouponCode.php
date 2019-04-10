@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+use App\Exceptions\CouponCodeUnavailableException;
 
 class CouponCode extends Model
 {
@@ -65,5 +67,50 @@ class CouponCode extends Model
         }
 
         return $str.' Minus $'.str_replace('.00', '', $this->value);
+    }
+
+    public function checkAvailable($orderAmount = null)
+    {
+        if (!$this->enabled) {
+            throw new CouponCodeUnavailableException('The Coupon is not existed');
+        }
+
+        if ($this->total - $this->used <= 0) {
+            throw new CouponCodeUnavailableException('The coupon has been out of stock');
+        }
+
+        if ($this->not_before && $this->not_before->gt(Carbon::now())) {
+            throw new CouponCodeUnavailableException('The coupon has not started yet');
+        }
+
+        if ($this->not_after && $this->not_after->lt(Carbon::now())) {
+            throw new CouponCodeUnavailableException('The coupon has been expired');
+        }
+
+        if (!is_null($orderAmount) && $orderAmount < $this->min_amount) {
+            throw new CouponCodeUnavailableException('The amount of order is less than minimal amount of the coupon');
+        }
+    }
+
+    public function getAdjustedPrice($orderAmount)
+    {
+        // 固定金额
+        if ($this->type === self::TYPE_FIXED) {
+            // 为了保证系统健壮性，我们需要订单金额最少为 0.01 元
+            return max(0.01, $orderAmount - $this->value);
+        }
+
+        return number_format($orderAmount * (100 - $this->value) / 100, 2, '.', '');
+    }
+
+    public function changeUsed($increase = true)
+    {
+        // 传入 true 代表新增用量，否则是减少用量
+        if ($increase) {
+            // 与检查 SKU 库存类似，这里需要检查当前用量是否已经超过总量
+            return $this->newQuery()->where('id', $this->id)->where('used', '<', $this->total)->increment('used');
+        } else {
+            return $this->decrement('used');
+        }
     }
 }
