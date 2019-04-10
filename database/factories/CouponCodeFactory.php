@@ -21,8 +21,10 @@ $factory->define(App\Models\CouponCode::class, function (Faker $faker) {
     }
 
     return [
-        'name'       => join(' ', $faker->words), // 随机生成名称
-        'code'       => App\Models\CouponCode::findAvailableCode(), // 调用优惠码生成方法
+        'name'       => join(' ', $faker->words), 
+        // 随机生成名称, 用空格相连
+        'code'       => App\Models\CouponCode::findAvailableCode(), 
+        // 调用优惠码生成方法
         'type'       => $type,
         'value'      => $value,
         'total'      => 1000,
