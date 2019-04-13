@@ -22,8 +22,8 @@ class CategoriesSeeder extends Seeder
         			[
         				'name' 		=>	'Earphones',
         				'children'	=>	[
-        					['name' =>	'Blue Tooth'],
-        					['name' =>	'Wired Control'],
+        					['name' =>	'Blue Tooth Earphones'],
+        					['name' =>	'Wired Control Earphones'],
         				],
         			],
         		],
