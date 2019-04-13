@@ -14,7 +14,7 @@ class CategoriesSeeder extends Seeder
     {
         $categories = [
         	[
-        		'name'		=>	'Mobile Accessories',
+        		'name'		=>	'Mobile Phone Accessories',
         		'children' 	=>	[
         			['name' =>	'Phone Cases'],
         			['name' =>	'Protectors'],
