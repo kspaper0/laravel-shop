@@ -12,12 +12,50 @@
       </div>
       <div class="col-sm-7">
         <div class="title">{{ $product->title }}</div>
-        <div class="price"><label>Price</label><em>$</em><span>{{ $product->price }}</span></div>
-        <div class="sales_and_reviews">
-          <div class="sold_count">Total Sales <span class="count">{{ $product->sold_count }}</span></div>
-          <div class="review_count">Total Comments <span class="count">{{ $product->review_count }}</span></div>
-          <div class="rating" title="Rating {{ $product->rating }}">Rating <span class="count">{{ str_repeat('★', floor($product->rating)) }}{{ str_repeat('☆', 5 - floor($product->rating)) }}</span></div>
-        </div>
+
+        <!-- 众筹商品模块开始 -->
+        @if($product->type === \App\Models\Product::TYPE_CROWDFUNDING)
+          <div class="crowdfunding-info">
+            <div class="have-text">Raised Funds: </div>
+            <div class="total-amount"><span class="symbol">$ </span>{{ $product->crowdfunding->total_amount }}</div>
+            <!-- 这里使用了 Bootstrap 的进度条组件 -->
+            <div class="progress">
+              <div class="progress-bar progress-bar-success progress-bar-striped"
+                role="progressbar"
+                aria-valuenow="{{ $product->crowdfunding->percent }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                style="min-width: 1em; width: {{ min($product->crowdfunding->percent, 100) }}%">
+              </div>
+            </div>
+            <div class="progress-info">
+              <span class="current-progress">Progress: {{ $product->crowdfunding->percent }}%</span>
+              <span class="pull-right user-count">{{ $product->crowdfunding->user_count }} Supporters</span>
+            </div>
+            <!-- 如果众筹状态是众筹中，则输出提示语 -->
+            @if ($product->crowdfunding->status === \App\Models\CrowdfundingProduct::STATUS_FUNDING)
+            <div>The project will be expired at 
+              <span class="text-red">{{ $product->crowdfunding->end_at->format('Y-m-d H:i:s') }}</span>
+              <span class="text-red"><br /> The target amount will be $ {{ $product->crowdfunding->target_amount }}</span>
+              
+              <!-- Carbon 对象的 diffForHumans() 方法可以计算出与当前时间的相对时间，更人性化 -->
+              Time Left: <span class="text-red">{{ $product->crowdfunding->end_at->diffForHumans(now()) }}</span>
+            </div>
+            @endif
+          </div>
+        @else
+          <!-- 原普通商品模块开始 -->
+          <div class="price"><label>Price</label><em>$</em><span>{{ $product->price }}</span></div>
+          <div class="sales_and_reviews">
+            <div class="sold_count">Total Sales <span class="count">{{ $product->sold_count }}</span></div>
+            <div class="review_count">Total Comments <span class="count">{{ $product->review_count }}</span></div>
+            <div class="rating" title="Rating {{ $product->rating }}">Rating <span class="count">{{ str_repeat('★', floor($product->rating)) }}{{ str_repeat('☆', 5 - floor($product->rating)) }}</span>
+            </div>
+          </div>
+          <!-- 原普通商品模块结束 -->
+        @endif
+        <!-- 众筹商品模块结束 -->
+
         <div class="skus">
           <label>Chosen</label>
           <div class="btn-group" data-toggle="buttons">
@@ -41,7 +79,23 @@
           @else
           <button class="btn btn-success btn-favor">❤ Favorites</button>
           @endif
-          <button class="btn btn-primary btn-add-to-cart">Add to Shopping Cart</button>
+          <!-- 众筹商品下单按钮开始 -->
+          @if($product->type === \App\Models\Product::TYPE_CROWDFUNDING)
+            @if(Auth::check())
+              @if($product->crowdfunding->status === \App\Models\CrowdfundingProduct::STATUS_FUNDING)
+                <button class="btn btn-primary btn-crowdfunding">Join Funding</button>
+              @else
+                <button class="btn btn-primary disabled">
+                  {{ \App\Models\CrowdfundingProduct::$statusMap[$product->crowdfunding->status] }}
+                </button>
+              @endif
+            @else
+              <a class="btn btn-primary" href="{{ route('login') }}">Login Here</a>
+            @endif
+          @else
+            <button class="btn btn-primary btn-add-to-cart">Add to Shopping Cart</button>
+          @endif
+          <!-- 众筹商品下单按钮结束 -->
         </div>
       </div>
     </div>
@@ -96,6 +150,83 @@
     $('.sku-btn').click(function () {
       $('.product-info .price span').text($(this).data('price'));
       $('.product-info .stock').text('Stock:' + $(this).data('stock'));
+    });
+
+    // 参与众筹 按钮点击事件
+    $('.btn-crowdfunding').click(function () {
+      // 判断是否选中 SKU
+      if (!$('label.active input[name=skus]').val()) {
+        swal('Please choose an item');
+        return;
+      }
+      // 把用户的收货地址以 JSON 的形式放入页面，赋值给 addresses 变量
+      var addresses = {!! json_encode(Auth::check() ? Auth::user()->addresses : []) !!};
+      // 使用 jQuery 动态创建一个表单
+      var $form = $('<form class="form-horizontal" role="form"></form>');
+
+      // 表单中添加一个收货地址的下拉框
+      $form.append('<div class="form-group">' +
+        '<label class="control-label col-sm-4">Please choose an address</label>' +
+        '<div class="col-sm-8">' +
+        '<select class="form-control" name="address_id"></select>' +
+        '</div></div>');
+      // 循环每个收货地址
+      addresses.forEach(function (address) {
+        // 把当前收货地址添加到收货地址下拉框选项中
+        $form.find('select[name=address_id]')
+          .append("<option value='" + address.id + "'>" +
+            address.full_address + ' ' + address.contact_name + ' ' + address.contact_phone +
+            '</option>');
+      });
+
+      // 在表单中添加一个名为 购买数量 的输入框
+      $form.append('<div class="form-group">' +
+        '<label class="control-label col-sm-4">Amount </label>' +
+        '<div class="col-sm-8"><input class="form-control" name="amount">' +
+        '</div></div>');
+      // 调用 SweetAlert 弹框
+      swal({
+        text: 'Are you sure to raise the funding',
+        content: $form[0], 
+        // 弹框的内容就是刚刚创建的表单
+        buttons: ['Cancel', 'Confirm']
+      }).then(function (ret) {
+        // 如果用户没有点确定按钮，则什么也不做
+        if (!ret) {
+          return;
+        }
+        // 构建请求参数
+        var req = {
+          address_id: $form.find('select[name=address_id]').val(),
+          amount: $form.find('input[name=amount]').val(),
+          sku_id: $('label.active input[name=skus]').val()
+        };
+        // 调用众筹商品下单接口
+        axios.post('{{ route('crowdfunding_orders.store') }}', req)
+          .then(function (response) {
+            // 订单创建成功，跳转到订单详情页
+            swal('Crowdfunding Successfully', '', 'success')
+              .then(() => {
+                location.href = '/orders/' + response.data.id;
+              });
+          }, function (error) {
+            // 输入参数校验失败，展示失败原因
+            if (error.response.status === 422) {
+              var html = '<div>';
+              _.each(error.response.data.errors, function (errors) {
+                _.each(errors, function (error) {
+                  html += error+'<br>';
+                })
+              });
+              html += '</div>';
+              swal({content: $(html)[0], icon: 'error'})
+            } else if (error.response.status === 403) {
+              swal(error.response.data.msg, '', 'error');
+            } else {
+              swal('Internal Error', '', 'error');
+            }
+          });
+      });
     });
 
     // 监听收藏按钮的点击事件
