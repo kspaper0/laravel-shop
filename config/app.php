@@ -6,6 +6,8 @@ return [
     'auto_receive_ttl' => 2592000,
     //'auto_receive_ttl' => 120,
 
+    'ngrok_url' => env('NGROK_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
