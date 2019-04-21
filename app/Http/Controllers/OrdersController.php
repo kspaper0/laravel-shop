@@ -135,6 +135,10 @@ class OrdersController extends Controller
         if (!$order->paid_at) {
             throw new InvalidRequestException('The order has not paid yet');
         }
+        // 众筹订单不允许申请退款
+        if ($order->type === Order::TYPE_CROWDFUNDING) {
+            throw new InvalidRequestException('The crowdfunding order cannot apply refend');
+        }
         // 判断订单退款状态是否正确
         if ($order->refund_status !== Order::REFUND_STATUS_PENDING) {
             throw new InvalidRequestException('The order has applied refund, please wait for response');
