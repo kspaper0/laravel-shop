@@ -130,7 +130,7 @@ class Order extends Model
                 return $no;
             }
         }
-        \Log::warning('find order no. failed');
+        \Log::warning('Finding Order No. Failed');
 
         return false;
     }
