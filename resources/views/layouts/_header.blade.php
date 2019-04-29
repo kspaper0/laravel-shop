@@ -49,6 +49,9 @@
                                 <a href="{{ route('orders.index') }}">My Order</a>
                             </li>
                             <li>
+                                <a href="{{ route('installments.index') }}">Installment</a>
+                            </li>
+                            <li>
                                 <a href="{{ route('products.favorites') }}">My Favorites</a>
                             </li>
                             <li>
