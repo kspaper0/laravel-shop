@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('installments', 'InstallmentsController@index')->name('installments.index');
         Route::get('installments/{installment}', 'InstallmentsController@show')->name('installments.show');
         Route::get('installments/{installment}/alipay', 'InstallmentsController@payByAlipay')->name('installments.alipay');
+        // Route::get('installments/{installment}/wechat', 'InstallmentsController@payByWechat')->name('installments.wechat');
         Route::get('installments/alipay/return', 'InstallmentsController@alipayReturn')->name('installments.alipay.return');
     });
     // 结束
@@ -76,4 +77,5 @@ Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('pa
 // 因为支付宝的服务器请求不会带有认证信息
 
 Route::post('installments/alipay/notify', 'InstallmentsController@alipayNotify')->name('installments.alipay.notify');
+// Route::post('installments/wechat/notify', 'InstallmentsController@wechatNotify')->name('installments.wechat.notify');
 
