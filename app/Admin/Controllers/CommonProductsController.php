@@ -88,6 +88,12 @@ abstract class CommonProductsController extends Controller
             $form->text('price', 'Price')->rules('required|numeric|min:0.01');
             $form->text('stock', 'Stock')->rules('required|integer|min:0');
         });
+
+        $form->hasMany('properties', 'Properties', function (Form\NestedForm $form) {
+            $form->text('name', 'Name')->rules('required');
+            $form->text('value', 'Value')->rules('required');
+        });
+
         $form->saving(function (Form $form) {
             $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
         });
