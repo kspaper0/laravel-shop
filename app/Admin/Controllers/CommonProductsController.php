@@ -9,6 +9,7 @@ use Encore\Admin\Layout\Content;
 use App\Models\Category;
 use Encore\Admin\Grid;
 use Encore\Admin\Form;
+use App\Jobs\SyncOneProductToES;
 
 abstract class CommonProductsController extends Controller
 {
@@ -104,6 +105,11 @@ abstract class CommonProductsController extends Controller
     		$tools->disableDelete();
     		// 去掉`查看`按钮
     		$tools->disableView();
+        });
+
+        $form->saved(function (Form $form) {
+            $product = $form->model();
+            $this->dispatch(new SyncOneProductToES($product));
         });
 
         return $form;
