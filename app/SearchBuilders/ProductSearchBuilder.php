@@ -43,6 +43,7 @@ class ProductSearchBuilder
             $this->params['body']['query']['bool']['filter'][] = [
                 'prefix' => ['category_path' => $category->path.$category->id.'-'],
             ];
+            // prefix 与 Mysql 的 like '%{path}%' 是等价的；
         } else {
             $this->params['body']['query']['bool']['filter'][] = ['term' => ['category_id' => $category->id]];
         }

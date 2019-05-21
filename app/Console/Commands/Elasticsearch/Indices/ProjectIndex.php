@@ -75,6 +75,12 @@ class ProjectIndex
         ];
     }
 
+    // 在 analysis 下的 filter 中定义了一个名为 synonym_filter 的 『同义词词语过滤器』
+    // 指定同义词的字典路径为 analysis/synonyms.txt
+    // 在 analyzer 下定义了一个名为 ik_smart_synonym 的 『自定义分析器』
+    // ik_smart 作为 『分词器』
+    // 上面定义的 synonym_filter 作为 『词语过滤器』
+
     public static function rebuild($indexName)
     {
         // 通过 Artisan 类的 call 方法可以直接调用命令
