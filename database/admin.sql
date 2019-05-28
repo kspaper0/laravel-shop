@@ -21,7 +21,7 @@
 
 LOCK TABLES `admin_menu` WRITE;
 /*!40000 ALTER TABLE `admin_menu` DISABLE KEYS */;
-INSERT INTO `admin_menu` VALUES (1,0,1,'Index','fa-bar-chart','/',NULL,NULL),(2,0,9,'Admin','fa-tasks','',NULL,'2019-04-16 11:01:50'),(3,2,10,'Users','fa-users','auth/users',NULL,'2019-04-16 11:01:50'),(4,2,11,'Roles','fa-user','auth/roles',NULL,'2019-04-16 11:01:50'),(5,2,12,'Permission','fa-ban','auth/permissions',NULL,'2019-04-16 11:01:50'),(6,2,13,'Menu','fa-bars','auth/menu',NULL,'2019-04-16 11:01:50'),(7,2,14,'Operation log','fa-history','auth/logs',NULL,'2019-04-16 11:01:50'),(8,0,2,'User Management','fa-users','/users','2019-03-20 09:30:06','2019-03-20 09:30:52'),(9,0,4,'Product Management','fa-cubes','/products','2019-03-20 12:12:59','2019-04-13 07:05:01'),(10,0,7,'Order Management','fa-usd','/orders','2019-04-04 08:17:47','2019-04-16 11:01:50'),(11,0,8,'Coupon Management','fa-tags','/coupon_codes','2019-04-07 10:16:05','2019-04-16 11:01:50'),(12,0,3,'Category Management','fa-bars','/categories','2019-04-13 07:04:32','2019-04-13 07:05:01'),(13,9,5,'Crowdfunding Good','fa-flag-checkered','/crowdfunding_products','2019-04-16 10:58:35','2019-04-16 11:01:50'),(14,9,6,'General Product','fa-cubes','/products','2019-04-16 11:01:23','2019-04-16 11:01:50');
+INSERT INTO `admin_menu` VALUES (1,0,1,'Index','fa-bar-chart','/',NULL,NULL),(2,0,9,'Admin','fa-tasks','',NULL,'2019-04-16 11:01:50'),(3,2,10,'Users','fa-users','auth/users',NULL,'2019-04-16 11:01:50'),(4,2,11,'Roles','fa-user','auth/roles',NULL,'2019-04-16 11:01:50'),(5,2,12,'Permission','fa-ban','auth/permissions',NULL,'2019-04-16 11:01:50'),(6,2,13,'Menu','fa-bars','auth/menu',NULL,'2019-04-16 11:01:50'),(7,2,14,'Operation log','fa-history','auth/logs',NULL,'2019-04-16 11:01:50'),(8,0,2,'User Management','fa-users','/users','2019-03-20 09:30:06','2019-03-20 09:30:52'),(9,0,4,'Product Management','fa-cubes','/products','2019-03-20 12:12:59','2019-04-13 07:05:01'),(10,0,7,'Order Management','fa-usd','/orders','2019-04-04 08:17:47','2019-04-16 11:01:50'),(11,0,8,'Coupon Management','fa-tags','/coupon_codes','2019-04-07 10:16:05','2019-04-16 11:01:50'),(12,0,3,'Category Management','fa-bars','/categories','2019-04-13 07:04:32','2019-04-13 07:05:01'),(13,9,5,'Crowdfunding Good','fa-flag-checkered','/crowdfunding_products','2019-04-16 10:58:35','2019-04-16 11:01:50'),(14,9,6,'General Product','fa-cubes','/products','2019-04-16 11:01:23','2019-04-16 11:01:50'),(15,9,0,'Seckill Product','fa-bolt','/seckill_products','2019-05-28 14:56:55','2019-05-28 14:56:55');
 /*!40000 ALTER TABLE `admin_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,4 +103,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-16 11:19:00
+-- Dump completed on 2019-05-28 15:42:19
