@@ -10,10 +10,12 @@ class Product extends Model
 
     const TYPE_NORMAL = 'normal';
     const TYPE_CROWDFUNDING = 'crowdfunding';
+    const TYPE_SECKILL = 'seckill';
 
     public static $typeMap = [
         self::TYPE_NORMAL       => 'General Product',
         self::TYPE_CROWDFUNDING => 'Crowdfunding Good',
+        self::TYPE_SECKILL      => 'Quick-Sale Product',
     ];
 
     protected $fillable = [
@@ -61,6 +63,11 @@ class Product extends Model
     public function properties()
     {
         return $this->hasMany(ProductProperty::class);
+    }
+
+    public function seckill()
+    {
+        return $this->hasOne(SeckillProduct::class);
     }
 
     public function getGroupedPropertiesAttribute()
