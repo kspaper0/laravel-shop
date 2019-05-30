@@ -18,6 +18,7 @@ class Order extends Model
     const SHIP_STATUS_DELIVERED = 'delivered';
     const SHIP_STATUS_RECEIVED = 'received';
 
+    const TYPE_SECKILL = 'seckill';
     const TYPE_NORMAL = 'normal';
     const TYPE_CROWDFUNDING = 'crowdfunding';
 
@@ -38,6 +39,7 @@ class Order extends Model
     public static $typeMap = [
         self::TYPE_NORMAL => 'General Product',
         self::TYPE_CROWDFUNDING => 'Crowdfunding Good',
+        self::TYPE_SECKILL  => 'Seckill Product',
     ];
 
     protected $fillable = [
