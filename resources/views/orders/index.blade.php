@@ -57,7 +57,7 @@
                     Closed
                   @else
                     Unpaid<br>
-                    Please check out before {{ $order->created_at->addSeconds(config('app.order_ttl'))->format('H:i') }}<br>
+                    Please check out before {{ $order->type === \App\Models\Order::TYPE_NORMAL ? $order->created_at->addSeconds(config('app.order_ttl'))->format('H:i') : $order->created_at->addSeconds(config('app.seckill_order_ttl'))->format('H:i') }}<br>
                     Otherwise, the order will be closed
                   @endif
                 </td>
