@@ -242,6 +242,7 @@ class OrderService
             if ($sku->decreaseStock(1) <= 0) {
                 throw new InvalidRequestException('The stock is not enough');
             }
+            \Redis::decr('seckill_sku_'.$sku->id);
 
             return $order;
         });

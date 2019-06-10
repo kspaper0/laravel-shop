@@ -6,9 +6,6 @@ use App\Models\Product;
 use App\Models\ProductSku;
 use Illuminate\Validation\Rule;
 
-use Illuminate\Auth\AuthenticationException;
-use App\Exceptions\InvalidRequestException;
-
 class SeckillOrderRequest extends Request
 {
     public function rules()
@@ -28,35 +25,26 @@ class SeckillOrderRequest extends Request
             'address.contact_name'  => 'required',
             'address.contact_phone' => 'required',
             
-            'sku_id'                => [
+            'sku_id'     => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    // 从 Redis 中读取数据
-                    $stock = \Redis::get('seckill_sku_'.$value);
-                    // 如果是 null 代表这个 SKU 不是秒杀商品
-                    if (is_null($stock)) {
+                    if (!$sku = ProductSku::find($value)) {
                         return $fail('The product is not existed');
                     }
-                    // 判断库存
-                    if ($stock < 1) {
-                        return $fail('The product has sold out');
+                    if ($sku->product->type !== Product::TYPE_SECKILL) {
+                        return $fail('The product is not a Seckill Product');
                     }
-
-                    // 大多数用户在上面的逻辑里就被拒绝了
-                    // 因此下方的 SQL 查询不会对整体性能有太大影响
-                    $sku = ProductSku::find($value);
                     if ($sku->product->seckill->is_before_start) {
                         return $fail('The Seckill Product has not started yet');
                     }
                     if ($sku->product->seckill->is_after_end) {
                         return $fail('The Seckill Product has ended already');
                     }
-
-                    if (!$user = \Auth::user()) {
-                        throw new AuthenticationException('Please Login ...');
+                    if (!$sku->product->on_sale) {
+                        return $fail('The product is not on sale');
                     }
-                    if (!$user->email_verified) {
-                        throw new InvalidRequestException('Please verify your Email.');
+                    if ($sku->stock < 1) {
+                        return $fail('The product has sold out');
                     }
 
                     if ($order = Order::query()
